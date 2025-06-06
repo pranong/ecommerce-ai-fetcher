@@ -19,56 +19,40 @@ bot.on('message', (msg) => {
         keywords = newKeywords
         bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords.join('\n')}`);
     } else if (msg.text == 'setKeywords') {
-        
+
     }
 });
 
-bot.onText(/\/keywords/, (msg) => {
-//   const chatId = msg.chat.id;
-console.log('keywords',msg)
-if (msg.text == 'keywords') {
-
-}
-  
-});
 
 bot.onText(/\/setKeywords (.+)/, (msg, match) => {
-//   const chatId = msg.chat.id;
-console.log('setKeywords',msg)
-let newKeywords = match[1]
-keywords = newKeywords
-  updateKeywords(newKeywords);
-  bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords}`);
-});
-
-bot.onText(/\/resetkeywords (.+)/, (msg, match) => {
-//   const chatId = msg.chat.id;
-console.log('resetkeywords',msg)
-let newKeywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
-  keywords = newKeywords
-  bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords.join('\n')}`);
+    //   const chatId = msg.chat.id;
+    console.log('setKeywords', msg)
+    let newKeywords = match[1]
+    keywords = newKeywords
+    updateKeywords(newKeywords);
+    bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords}`);
 });
 
 function sendNotification(listing) {
-  const { title, url, imageUrls, id } = listing;
-  const imageUrl = imageUrls?.[0] || '';
+    const { title, url, imageUrls, id } = listing;
+    const imageUrl = imageUrls?.[0] || '';
 
-  const caption = '*(' + listing.currency + listing.price + ')* ' + listing.title + `\n[View Listing](${url})`;
+    const caption = '*(' + listing.currency + listing.price + ')* ' + listing.title + `\n[View Listing](${url})`;
 
-  
 
-  bot.sendPhoto(CHAT_ID, imageUrl, {
-    caption,
-    parse_mode: 'Markdown',
-    reply_markup: {
-      inline_keyboard: [
-        [
-          { text: '👍 Interested', callback_data: `interest_${id}` },
-          { text: '👎 Not Interested', callback_data: `no_interest_${id}` },
-        ],
-      ],
-    },
-  });
+
+    bot.sendPhoto(CHAT_ID, imageUrl, {
+        caption,
+        parse_mode: 'Markdown',
+        reply_markup: {
+            inline_keyboard: [
+                [
+                    { text: '👍 Interested', callback_data: `interest_${id}` },
+                    { text: '👎 Not Interested', callback_data: `no_interest_${id}` },
+                ],
+            ],
+        },
+    });
 }
 
 function getKeywords() {
@@ -98,6 +82,6 @@ function getKeywords() {
 // });
 
 module.exports = {
-  sendNotification,
-  getKeywords,
+    sendNotification,
+    getKeywords,
 };
