@@ -12,12 +12,24 @@ let keywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,d
 
 bot.on('message', (msg) => {
     console.log('Your Chat ID:', msg);
+    if (msg.text == 'keywords') {
+        bot.sendMessage(CHAT_ID, `Current keywords:\n${keywords}`);
+    } else if (msg.text == 'resetkeywords') {
+        let newKeywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
+        keywords = newKeywords
+        bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords.join('\n')}`);
+    } else if (msg.text == 'setKeywords') {
+        
+    }
 });
 
 bot.onText(/\/keywords/, (msg) => {
 //   const chatId = msg.chat.id;
 console.log('keywords',msg)
-  bot.sendMessage(CHAT_ID, `Current keywords:\n${keywords}`);
+if (msg.text == 'keywords') {
+
+}
+  
 });
 
 bot.onText(/\/setKeywords (.+)/, (msg, match) => {
