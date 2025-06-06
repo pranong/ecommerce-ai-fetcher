@@ -11,30 +11,8 @@ const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 let keywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
 
 bot.on('message', (msg) => {
-    console.log('Your Chat ID:', msg.chat.id);
+    console.log('Your Chat ID:', msg);
 });
-
-function sendNotification(listing) {
-  const { title, url, imageUrls, id } = listing;
-  const imageUrl = imageUrls?.[0] || '';
-
-  const caption = '*(' + listing.currency + listing.price + ')* ' + listing.title + `\n[View Listing](${url})`;
-
-  
-
-  bot.sendPhoto(CHAT_ID, imageUrl, {
-    caption,
-    parse_mode: 'Markdown',
-    reply_markup: {
-      inline_keyboard: [
-        [
-          { text: '👍 Interested', callback_data: `interest_${id}` },
-          { text: '👎 Not Interested', callback_data: `no_interest_${id}` },
-        ],
-      ],
-    },
-  });
-}
 
 bot.onText(/\/keywords/, (msg) => {
 //   const chatId = msg.chat.id;
@@ -58,6 +36,28 @@ let newKeywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic yout
   keywords = newKeywords
   bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords.join('\n')}`);
 });
+
+function sendNotification(listing) {
+  const { title, url, imageUrls, id } = listing;
+  const imageUrl = imageUrls?.[0] || '';
+
+  const caption = '*(' + listing.currency + listing.price + ')* ' + listing.title + `\n[View Listing](${url})`;
+
+  
+
+  bot.sendPhoto(CHAT_ID, imageUrl, {
+    caption,
+    parse_mode: 'Markdown',
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: '👍 Interested', callback_data: `interest_${id}` },
+          { text: '👎 Not Interested', callback_data: `no_interest_${id}` },
+        ],
+      ],
+    },
+  });
+}
 
 function getKeywords() {
     return keywords
