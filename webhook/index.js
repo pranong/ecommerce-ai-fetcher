@@ -3,6 +3,7 @@ const { Client, middleware } = require('@line/bot-sdk');
 const { mainProcess } = require('./main-process');
 const { lookupEmbeddingForListing, addFeedback } = require('./utils/feedback-handler')
 const { createHash } = require('node:crypto');
+// const { getKeywords } = require('./utils/notification/telegram/notifier');
 
 require('dotenv').config();
 

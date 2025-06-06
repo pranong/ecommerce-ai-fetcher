@@ -38,11 +38,13 @@ function sendNotification(listing) {
 
 bot.onText(/\/keywords/, (msg) => {
 //   const chatId = msg.chat.id;
+console.log('keywords',msg)
   bot.sendMessage(CHAT_ID, `Current keywords:\n${keywords}`);
 });
 
 bot.onText(/\/setKeywords (.+)/, (msg, match) => {
 //   const chatId = msg.chat.id;
+console.log('setKeywords',msg)
 let newKeywords = match[1]
 keywords = newKeywords
   updateKeywords(newKeywords);
@@ -51,6 +53,7 @@ keywords = newKeywords
 
 bot.onText(/\/resetkeywords (.+)/, (msg, match) => {
 //   const chatId = msg.chat.id;
+console.log('resetkeywords',msg)
 let newKeywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
   keywords = newKeywords
   bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords.join('\n')}`);
