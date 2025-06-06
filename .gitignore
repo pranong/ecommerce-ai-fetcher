@@ -1,0 +1,3 @@
+.vscode
+webhook/node_modules
+webhook/utils/ebay-fetcher/config.json

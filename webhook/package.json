@@ -1,0 +1,22 @@
+{
+  "name": "ai-fetch-listings",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pnkrwk",
+  "license": "ISC",
+  "dependencies": {
+    "@line/bot-sdk": "^9.9.0",
+    "@xenova/transformers": "^1.3.0",
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
+    "ebay-api": "^9.2.0",
+    "ebay-oauth-nodejs-client": "^1.2.2",
+    "express": "^5.1.0",
+    "node-fetch": "^3.0.0",
+    "sharp": "^0.32.0"
+  }
+}

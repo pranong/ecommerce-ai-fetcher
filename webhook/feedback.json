@@ -1,0 +1,13 @@
+{
+  "interested": [],
+  "not_interested": [
+    {
+      "listingId": "v1|135928237707|435103167303",
+      "embedding": null
+    }
+  ],
+  "reasons": {
+    "v1|135928237707|435103167303": "graphic"
+  },
+  "temp": []
+}
