@@ -16,10 +16,13 @@ async function loadModel() {
   return model;
 }
 
+let apiEndpoint= 'flask-api'
+// let apiEndpoint= '127.0.0.1'
+
 async function getEmbeddingFromPython(imageUrl) {
   try {
     console.log('imageUrl', imageUrl)
-    const response = await axios.post('http://flask-api:5000/embed', { imageUrl: imageUrl });
+    const response = await axios.post('http://'+apiEndpoint+':5000/embed', { imageUrl: imageUrl });
     console.log('getEmbeddingFromPython response', response.data)
     return response.data.embedding; // Array of floats
   } catch (error) {
@@ -33,7 +36,7 @@ async function sendImageForEmbedding(imagePath) {
   form.append('image', fs.createReadStream(imagePath));
 
   try {
-    const response = await axios.post('http://flask-api:5000/embed', form, {
+    const response = await axios.post('http://'+apiEndpoint+':5000/embed', form, {
       headers: {
         ...form.getHeaders(),
       },
@@ -53,7 +56,7 @@ async function sendCheckIsImageIsClothing(imagePath, listing) {
   form.append('image', fs.createReadStream(imagePath));
 
   try {
-    const response = await axios.post('http://flask-api:5000/check-tshirt', form, {
+    const response = await axios.post('http://'+apiEndpoint+':5000/check-tshirt', form, {
       headers: {
         ...form.getHeaders(),
       },
@@ -61,7 +64,7 @@ async function sendCheckIsImageIsClothing(imagePath, listing) {
       maxBodyLength: Infinity,
     });
 
-    // const response = await axios.post('http://flask-api:5000/check-tshirt', { imagePath, listing });
+    // const response = await axios.post('http://'+apiEndpoint+':5000/check-tshirt', { imagePath, listing });
 
     // console.log('check-tshirt:', response.data);
     return response.data;

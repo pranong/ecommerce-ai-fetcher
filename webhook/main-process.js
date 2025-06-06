@@ -3,9 +3,12 @@ const { fetchEbayListings } = require('./utils/ebay-fetcher/fetch-ebay');
 const { downloadImages } = require('./utils/image-downloader');
 const { generateEmbeddings, checkImageIsclothing } = require('./utils/embedder');
 const { calculateSimilarity } = require('./utils/similarity');
-const { sendNotification } = require('./utils/notifier');
+// const { sendNotification } = require('./utils/notification/line/notifier');
+const { sendNotification } = require('./utils/notification/telegram/notifier');
 const { saveEmbedToTemp } = require('./utils/feedback-handler');
 const { loadFeedback } = require('./utils/feedback');
+
+const fs = require('fs/promises');
 
 const SIMILARITY_THRESHOLD = 0.99;
 let seenListingIds = new Set();
@@ -53,6 +56,7 @@ async function processListing(listing) {
 async function mainProcess(keywords) {
   console.log('yay', keywords)
   console.log('START Listing')
+  await deleteFolder('./tmp')
   const listings = await fetchEbayListings(keywords, 200);
   console.log('FINISH Listing')
 
@@ -67,6 +71,15 @@ async function mainProcess(keywords) {
     for (const listing of listings) {
         seenListingIds.add(listing.id);
     }
+  }
+}
+
+async function deleteFolder(path) {
+  try {
+    await fs.rm(path, { recursive: true, force: true });
+    console.log('Folder deleted');
+  } catch (err) {
+    console.error('Error deleting folder:', err);
   }
 }
 

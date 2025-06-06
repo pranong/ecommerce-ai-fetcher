@@ -3,15 +3,22 @@ import torch
 import clip
 from PIL import Image
 from flask import Flask, request, jsonify
-from ultralytics import YOLO
 
 app = Flask(__name__)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-model, preprocess = clip.load("ViT-B/32", device=device)
+model = None
+preprocess = None
+
+def load_model():
+    global model, preprocess
+    if model is None or preprocess is None:
+        model, preprocess = clip.load("RN50", device=device)
 
 @app.route('/embed', methods=['POST'])
 def embed():
+    load_model()
+
     if 'image' not in request.files:
         return jsonify({"error": "No image file uploaded"}), 400
 
@@ -22,7 +29,6 @@ def embed():
     except Exception as e:
         return jsonify({"error": f"Invalid image: {str(e)}"}), 400
 
-    # Preprocess and embed image
     image_input = preprocess(image).unsqueeze(0).to(device)
 
     with torch.no_grad():
@@ -30,12 +36,12 @@ def embed():
         image_features /= image_features.norm(dim=-1, keepdim=True)
 
     embedding = image_features.cpu().numpy()[0].tolist()
-
     return jsonify({"embedding": embedding})
-
 
 @app.route('/check-tshirt', methods=['POST'])
 def check_tshirt():
+    load_model()
+
     if 'image' not in request.files:
         return jsonify({"error": "No image file uploaded"}), 400
 
@@ -48,7 +54,6 @@ def check_tshirt():
 
     image_input = preprocess(image).unsqueeze(0).to(device)
 
-    # Define the classes you want to check
     text_labels = ["a photo of a t-shirt", "a photo of a shoe", "a photo of a bag", "a random object"]
     text_tokens = clip.tokenize(text_labels).to(device)
 
@@ -59,13 +64,11 @@ def check_tshirt():
         image_features /= image_features.norm(dim=-1, keepdim=True)
         text_features /= text_features.norm(dim=-1, keepdim=True)
 
-        # Cosine similarity
         similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
 
     probs = similarity[0].tolist()
     results = [{"label": label, "probability": round(prob, 3)} for label, prob in zip(text_labels, probs)]
     return jsonify({"data": results})
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
