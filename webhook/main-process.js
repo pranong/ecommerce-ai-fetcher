@@ -4,7 +4,7 @@ const { downloadImages } = require('./utils/image-downloader');
 const { generateEmbeddings, checkImageIsclothing } = require('./utils/embedder');
 const { calculateSimilarity } = require('./utils/similarity');
 // const { sendNotification } = require('./utils/notification/line/notifier');
-const { sendNotification } = require('./utils/notification/telegram/notifier');
+const { sendNotification, getKeywords } = require('./utils/notification/telegram/notifier');
 const { saveEmbedToTemp } = require('./utils/feedback-handler');
 const { loadFeedback } = require('./utils/feedback');
 
@@ -55,6 +55,7 @@ async function processListing(listing) {
 
 async function mainProcess(keywords) {
   console.log('yay', keywords)
+  keywords = getKeywords();
   console.log('START Listing')
   await deleteFolder('./tmp')
   const listings = await fetchEbayListings(keywords, 200);

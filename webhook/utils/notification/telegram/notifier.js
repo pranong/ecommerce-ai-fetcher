@@ -8,6 +8,8 @@ const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 // Replace with your real user or group chat ID
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
+let keywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
+
 bot.on('message', (msg) => {
     console.log('Your Chat ID:', msg.chat.id);
 });
@@ -34,6 +36,30 @@ function sendNotification(listing) {
   });
 }
 
+bot.onText(/\/keywords/, (msg) => {
+//   const chatId = msg.chat.id;
+  bot.sendMessage(CHAT_ID, `Current keywords:\n${keywords}`);
+});
+
+bot.onText(/\/setKeywords (.+)/, (msg, match) => {
+//   const chatId = msg.chat.id;
+let newKeywords = match[1]
+keywords = newKeywords
+  updateKeywords(newKeywords);
+  bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords}`);
+});
+
+bot.onText(/\/resetkeywords (.+)/, (msg, match) => {
+//   const chatId = msg.chat.id;
+let newKeywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
+  keywords = newKeywords
+  bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords.join('\n')}`);
+});
+
+function getKeywords() {
+    return keywords
+}
+
 // Handle button clicks
 // bot.on('callback_query', async (query) => {
 //   const chatId = query.message.chat.id;
@@ -57,5 +83,6 @@ function sendNotification(listing) {
 // });
 
 module.exports = {
-  sendNotification
+  sendNotification,
+  getKeywords,
 };
