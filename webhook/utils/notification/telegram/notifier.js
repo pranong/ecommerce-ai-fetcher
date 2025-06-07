@@ -18,7 +18,7 @@ bot.on('message', (msg) => {
     } else if (msg.text == '/resetkeywords') {
         let newKeywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
         keywords = newKeywords
-        bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords.join('\n')}`);
+        bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords}`);
     } else if (setKeywordsPattern.test(msg.text)) {
         console.log('right setKeywordsPattern')
         const parts = msg.text.split(' ');
@@ -30,7 +30,7 @@ bot.on('message', (msg) => {
         if (match) {
             console.log('match sPattern')
             keywords = result
-            bot.sendMessage(CHAT_ID, `Updated keywords to:\n${result.join('\n')}`);
+            bot.sendMessage(CHAT_ID, `Updated keywords to:\n${result}`);
         } else {
 
         }
