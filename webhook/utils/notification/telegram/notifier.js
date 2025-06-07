@@ -12,14 +12,23 @@ let keywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,d
 
 bot.on('message', (msg) => {
     console.log('Your Chat ID:', msg);
-    if (msg.text == 'keywords') {
+    const setKeywordsPattern = /^\/setKeywords \((.*)\)$/;
+    if (msg.text == '/keywords') {
         bot.sendMessage(CHAT_ID, `Current keywords:\n${keywords}`);
-    } else if (msg.text == 'resetkeywords') {
+    } else if (msg.text == '/resetkeywords') {
         let newKeywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
         keywords = newKeywords
         bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords.join('\n')}`);
-    } else if (msg.text == 'setKeywords') {
+    } else if (setKeywordsPattern.test(msg.text)) {
+        const parts = input.split(" ");
+        const result = parts.slice(1).join(" ");
+        const match = result.match(/^\(((?:[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*)(?:,(?:[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*))*?)\)$/);
+        if (match) {
+            keywords = newKeywords
+            bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords.join('\n')}`);
+        } else {
 
+        }
     }
 });
 
