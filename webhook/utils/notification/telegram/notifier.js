@@ -21,9 +21,9 @@ bot.on('message', (msg) => {
         bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords.join('\n')}`);
     } else if (setKeywordsPattern.test(msg.text)) {
         console.log('right setKeywordsPattern')
-        const parts = input.split(" ");
+        const parts = input.split(' ');
         console.log('parts', parts)
-        const result = parts.slice(1).join(" ");
+        const result = parts.slice(1).join(' ');
         console.log('result', result)
         const match = result.match(/^\(((?:[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*)(?:,(?:[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*))*?)\)$/);
         console.log('match', match)
