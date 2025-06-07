@@ -30,7 +30,7 @@ bot.on('message', (msg) => {
         if (match) {
             console.log('match sPattern')
             keywords = result
-            bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords.join('\n')}`);
+            bot.sendMessage(CHAT_ID, `Updated keywords to:\n${result.join('\n')}`);
         } else {
 
         }
