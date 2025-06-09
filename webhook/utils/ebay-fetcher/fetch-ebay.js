@@ -25,7 +25,7 @@ async function fetchEbayListings(keyword, limit = 100) {
     // console.log(typeof response, 'response', response.data)
     // console.log('browse success', keyword)
     const listings = (data.itemSummaries || []).filter(x => !x.itemGroupType || (x.itemGroupType && x.itemGroupType !== 'SELLER_DEFINED_VARIATIONS')).map(item => {
-      // console.log('wholeListing',item)
+      console.log('type item.categories',typeof item.categories)
         return ({
         id: item.itemId,
         title: item.title,
