@@ -16,7 +16,7 @@ let seenListingIds = new Set();
 async function processListing(listing) {
   const imagePaths = await downloadImages(listing);
   const imageIsClothing = await checkImageIsclothing(imagePaths, listing);
-  if (imageIsClothing || imagePaths == [] || listing.categories.find(x => [15687,11450,185100].includes(x.categoryId))) {
+  if (imageIsClothing || imagePaths == [] || listing.categories.find(x => [15687, 11450, 185100].includes(x.categoryId))) {
     // const imageEmbeds = await generateEmbeddings(imagePaths);
     // const feedback = loadFeedback();
 
@@ -72,7 +72,7 @@ async function mainProcess(keywords) {
     }
   } else {
     for (const listing of listings) {
-        seenListingIds.add(listing.id);
+      seenListingIds.add(listing.id);
     }
   }
 }
@@ -89,40 +89,45 @@ async function deleteFolder(path) {
 async function deleteFolderByDate(tmpDir) {
   try {
     const now = Date.now();
-const FIVE_MINUTES = 5 * 60 * 1000;
+    const FIVE_MINUTES = 5 * 60 * 1000;
 
-fs.readdir(tmpDir, (err, files) => {
-  if (err) {
-    console.error('Failed to read /tmp directory:', err);
-    return;
-  }
+    // Ensure tmp directory exists
+    if (!fs.existsSync(tmpDir)) {
+      console.log('tmp directory does not exist.');
+      fs.mkdirSync(tmpDir, { recursive: true });
+    } else {
+      fs.readdir(tmpDir, (err, files) => {
+        if (err) {
+          console.error('Failed to read tmp directory:', err);
+          return;
+        }
 
-  files.forEach(file => {
-    const fullPath = path.join(tmpDir, file);
+        files.forEach(file => {
+          const fullPath = path.join(tmpDir, file);
 
-    fs.stat(fullPath, (err, stats) => {
-      if (err) {
-        console.error('Failed to get stats for', fullPath, err);
-        return;
-      }
-
-      // Only delete directories
-      if (stats.isDirectory()) {
-        const age = now - stats.ctimeMs; // creation time in ms
-
-        if (age >= FIVE_MINUTES) {
-          fs.rm(fullPath, { recursive: true, force: true }, (err) => {
+          fs.stat(fullPath, (err, stats) => {
             if (err) {
-              console.error('Failed to delete', fullPath, err);
-            } else {
-              console.log('Deleted:', fullPath);
+              console.error('Failed to get stats for', fullPath, err);
+              return;
+            }
+
+            if (stats.isDirectory()) {
+              const age = now - stats.ctimeMs;
+
+              if (age < FIVE_MINUTES) {
+                fs.rm(fullPath, { recursive: true, force: true }, (err) => {
+                  if (err) {
+                    console.error('Failed to delete', fullPath, err);
+                  } else {
+                    console.log('Deleted (created < 5min ago):', fullPath);
+                  }
+                });
+              }
             }
           });
-        }
-      }
-    });
-  });
-});
+        });
+      });
+    }
   } catch (err) {
     console.error('Error deleting folder:', err);
   }
