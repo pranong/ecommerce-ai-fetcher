@@ -16,6 +16,7 @@ async function fetchEbayListings(keyword, limit = 100) {
       },
       params: {
         q: keyword,
+        filter: 'personalize:false',
         limit,
         sort: 'newlyListed'
       },
@@ -31,6 +32,7 @@ async function fetchEbayListings(keyword, limit = 100) {
         url: item.itemWebUrl,
         imageUrls: item.additionalImages ? (item.image && item.image.imageUrl ? ([item.image.imageUrl].concat(item.additionalImages.map(x => x.imageUrl))) : (item.additionalImages)) : item.image && item.image.imageUrl ? [item.image.imageUrl] : [],
         price: item.price.value,
+        categories,
         currency: item.price.currency
       })
     });

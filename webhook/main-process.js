@@ -16,7 +16,7 @@ let seenListingIds = new Set();
 async function processListing(listing) {
   const imagePaths = await downloadImages(listing);
   const imageIsClothing = await checkImageIsclothing(imagePaths, listing);
-  if (imageIsClothing || imagePaths == []) {
+  if (imageIsClothing || imagePaths == [] || listing.categories.find(x => [15687,11450,185100].includes(x.categoryId))) {
     const imageEmbeds = await generateEmbeddings(imagePaths);
     const feedback = loadFeedback();
 
