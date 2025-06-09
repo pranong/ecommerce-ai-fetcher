@@ -22,6 +22,7 @@ async function processListing(listing) {
   if (imageIsClothing || imagePaths == [] || listing.categories.find(x => [15687, 11450, 185100].includes(x.categoryId))) {
     console.log('imageIsClothing?>>>>>>>>>>>>>>>>>>>>', imageIsClothing)
     console.log('imagePaths == []>>>>>>>>>>>>>>>>>>>>', imagePaths == [])
+    console.log('categories', listing.categories)
     console.log('categories in [15687, 11450, 185100]', listing.categories.find(x => [15687, 11450, 185100].includes(x.categoryId)))
     // const imageEmbeds = await generateEmbeddings(imagePaths);
     // const feedback = loadFeedback();
