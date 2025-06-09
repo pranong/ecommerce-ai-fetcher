@@ -105,8 +105,6 @@ async function checkImageIsclothing(imagePaths, listing) {
         }
       }
     }
-    
-      console.log('isClothing?>>>>>>>', response)
   } catch (error) {
     console.log('error', error)
   }
