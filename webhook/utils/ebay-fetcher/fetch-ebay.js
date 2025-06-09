@@ -32,7 +32,7 @@ async function fetchEbayListings(keyword, limit = 100) {
         url: item.itemWebUrl,
         imageUrls: item.additionalImages ? (item.image && item.image.imageUrl ? ([item.image.imageUrl].concat(item.additionalImages.map(x => x.imageUrl))) : (item.additionalImages)) : item.image && item.image.imageUrl ? [item.image.imageUrl] : [],
         price: item.price.value,
-        categories,
+        categories: item.categories,
         currency: item.price.currency
       })
     });
