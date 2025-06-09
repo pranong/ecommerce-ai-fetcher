@@ -94,7 +94,7 @@ async function checkImageIsclothing(imagePaths, listing) {
   let isClothingCount = 0
   try {
     // const model = await loadModel();
-    console.log('listing',listing)
+    console.log('listing.title',listing.title)
     for (const imagePath of imagePaths) {
       let result = await sendCheckIsImageIsClothing(imagePath, listing);
       // console.log('result.data', result.data)
