@@ -192,7 +192,7 @@ async function handleEvent(event) {
 mainProcess(keywords)
 setInterval(function() {
      mainProcess(keywords)
-   }, 5 * 60 * 1000);
+   }, 30 * 1000);
 
 app.listen(3500, () => {
     console.log('LINE webhook listening on port 3500');
