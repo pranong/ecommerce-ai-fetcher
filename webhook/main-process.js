@@ -117,7 +117,7 @@ async function deleteFolderByDate(tmpDir) {
             if (stats.isDirectory()) {
               const age = now - stats.ctimeMs;
 
-              if (age < FIVE_MINUTES) {
+              if (age > FIVE_MINUTES) {
                 fs.rm(fullPath, { recursive: true, force: true }, (err) => {
                   if (err) {
                     console.error('Failed to delete', fullPath, err);
