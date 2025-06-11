@@ -30,7 +30,7 @@ async function fetchEbayListings(keyword, limit = 100) {
         id: item.itemId,
         title: item.title,
         url: item.itemWebUrl,
-        type: item.buyingOptions.join('|'),
+        type: item.buyingOptions.find(x => x == 'AUCTION') ? 'AUCTION' : '',
         imageUrls: item.additionalImages ? (item.image && item.image.imageUrl ? ([item.image.imageUrl].concat(item.additionalImages.map(x => x.imageUrl))) : (item.additionalImages)) : item.image && item.image.imageUrl ? [item.image.imageUrl] : [],
         price: item.price ? item.price.value : item.currentBidPrice ? item.currentBidPrice.value : 'price:null',
         categories: item.categories,
