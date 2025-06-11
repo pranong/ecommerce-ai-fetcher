@@ -46,7 +46,7 @@ function sendNotification(listing) {
     const { title, url, imageUrls, id } = listing;
     const imageUrl = imageUrls?.[0] || '';
 
-    const caption = '*(' + listing.currency + listing.price + ')* ' + listing.title + `\n[View Listing](${url})`;
+    const caption = '*(' + listing.currency + listing.price + ')* ' + listing.title + `\n` + listing.type + ` [View Listing](${url})`;
 
 
 

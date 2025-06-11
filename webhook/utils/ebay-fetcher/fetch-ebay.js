@@ -30,10 +30,11 @@ async function fetchEbayListings(keyword, limit = 100) {
         id: item.itemId,
         title: item.title,
         url: item.itemWebUrl,
+        type: item.buyingOptions.join('|'),
         imageUrls: item.additionalImages ? (item.image && item.image.imageUrl ? ([item.image.imageUrl].concat(item.additionalImages.map(x => x.imageUrl))) : (item.additionalImages)) : item.image && item.image.imageUrl ? [item.image.imageUrl] : [],
-        price: item.price.value,
+        price: item.price ? item.price.value : item.currentBidPrice ? item.currentBidPrice.value : 'price:null',
         categories: item.categories,
-        currency: item.price.currency
+        currency: item.price ? item.price.currency : item.currentBidPrice ? item.currentBidPrice.currency : 'currency:null'
       })
     });
     return listings;
