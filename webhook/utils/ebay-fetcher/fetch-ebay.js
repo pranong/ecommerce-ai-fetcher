@@ -16,16 +16,16 @@ async function fetchEbayListings(keyword, limit = 100) {
       },
       params: {
         q: keyword,
-        filter: 'buyingOptions:{FIXED_PRICE|AUCTION|BEST_OFFER}',
+        filter: 'personalize:false,buyingOptions:{FIXED_PRICE|AUCTION|BEST_OFFER}',
         limit,
         sort: 'newlyListed'
       },
     });
     const data = response.data;
     // console.log(typeof response, 'response', response.data)
-    console.log('browse success', keyword)
+    // console.log('browse success', keyword)
     const listings = (data.itemSummaries || []).filter(x => !x.itemGroupType || (x.itemGroupType && x.itemGroupType !== 'SELLER_DEFINED_VARIATIONS')).map(item => {
-      // console.log('type item.categories',typeof item.categories)
+      console.log('item', item)
         return ({
         id: item.itemId,
         title: item.title,
