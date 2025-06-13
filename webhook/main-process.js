@@ -69,25 +69,18 @@ async function mainProcess() {
   const listings = await fetchEbayListings(keywords, 200);
   console.log('FINISH Listing')
 
-  for (const listing of listings) {
+  if (seenListingIds.size > 0) {
+    for (const listing of listings) {
       if (!seenListingIds.has(listing.id)) {
         seenListingIds.add(listing.id);
         await processListing(listing);
       }
     }
-
-  // if (seenListingIds.size > 0) {
-  //   for (const listing of listings) {
-  //     if (!seenListingIds.has(listing.id)) {
-  //       seenListingIds.add(listing.id);
-  //       await processListing(listing);
-  //     }
-  //   }
-  // } else {
-  //   for (const listing of listings) {
-  //     seenListingIds.add(listing.id);
-  //   }
-  // }
+  } else {
+    for (const listing of listings) {
+      seenListingIds.add(listing.id);
+    }
+  }
 }
 
 async function deleteFolderByDate(tmpDir) {
