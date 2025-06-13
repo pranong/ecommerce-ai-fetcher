@@ -24,6 +24,7 @@ async function fetchEbayListings(keyword, limit = 100) {
     const data = response.data;
     // console.log(typeof response, 'response', response.data)
     // console.log('browse success', keyword)
+    console.log('listing size', data.itemSummaries.length)
     const listings = (data.itemSummaries || []).filter(x => !x.itemGroupType || (x.itemGroupType && x.itemGroupType !== 'SELLER_DEFINED_VARIATIONS')).map(item => {
       // console.log('item', item)
         return ({
@@ -37,6 +38,7 @@ async function fetchEbayListings(keyword, limit = 100) {
         currency: item.price ? item.price.currency : item.currentBidPrice ? item.currentBidPrice.currency : 'currency:null'
       })
     });
+    console.log('listings filtered size', listings.length)
     return listings;
   } catch (error) {
     throw new Error(`eBay API error: ${error.response?.status} ${error.response?.statusText || error.message}`);
