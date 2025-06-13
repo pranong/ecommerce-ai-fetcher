@@ -74,6 +74,29 @@ async function sendCheckIsImageIsClothing(imagePath, listing) {
   }
 }
 
+async function sendCheckIsImageIsClothingYolo(imagePath, listing) {
+  const form = new FormData();
+  form.append('image', fs.createReadStream(imagePath));
+
+  try {
+    const response = await axios.post('http://'+apiEndpoint+':5000/check-tshirt-yolo', form, {
+      headers: {
+        ...form.getHeaders(),
+      },
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity,
+    });
+
+    // const response = await axios.post('http://'+apiEndpoint+':5000/check-tshirt', { imagePath, listing });
+
+    // console.log('check-tshirt:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error sending image:', error.response?.data || error.message);
+    throw error;
+  }
+}
+
 async function generateEmbeddings(imagePaths) {
   const embeddings = [];
   try {
@@ -100,7 +123,7 @@ async function checkImageIsclothing(imagePaths, listing) {
       // console.log('result.data', result.data)
       for (let i = 0; i < result.data.length; i++) {
         const element = result.data[i];
-        if (element.label === 'a photo of a t-shirt' && element.probability >= 0.90) {
+        if ((element.label === 'a photo of a t-shirt') && element.probability >= 0.90) {
           response = true
         }
       }
@@ -111,4 +134,26 @@ async function checkImageIsclothing(imagePaths, listing) {
   return response;
 }
 
-module.exports = { generateEmbeddings, checkImageIsclothing };
+async function checkImageIsclothingYolo(imagePaths, listing) {
+  let response = false;
+  let isClothingCount = 0
+  try {
+    // const model = await loadModel();
+    console.log('listing.title',listing.title)
+    for (const imagePath of imagePaths) {
+      let result = await sendCheckIsImageIsClothingYolo(imagePath, listing);
+      console.log('result.data', result.data)
+      for (let i = 0; i < result.data.length; i++) {
+        const element = result.data[i];
+        if ((element.label === 't-shirt' || element.label === 'shirt') && element.probability >= 0.90) {
+          response = true
+        }
+      }
+    }
+  } catch (error) {
+    console.log('error', error)
+  }
+  return response;
+}
+
+module.exports = { generateEmbeddings, checkImageIsclothing, checkImageIsclothingYolo };

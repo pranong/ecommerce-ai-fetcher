@@ -3,6 +3,9 @@ import torch
 import clip
 from PIL import Image
 from flask import Flask, request, jsonify
+from ultralytics import YOLO
+
+
 
 app = Flask(__name__)
 
@@ -69,6 +72,30 @@ def check_tshirt():
     probs = similarity[0].tolist()
     results = [{"label": label, "probability": round(prob, 3)} for label, prob in zip(text_labels, probs)]
     return jsonify({"data": results})
+
+@app.route('/check-tshirt-yolo', methods=['POST'])
+def check_tshirt_yolo():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image provided'}), 400
+
+    # Read image from the request
+    image_file = request.files['image']
+    image = Image.open(image_file.stream).convert("RGB")
+
+    # Run inference
+    results = model(image)
+
+    detections = []
+    for box in results[0].boxes:
+        label = model.names[int(box.cls)]
+        conf = float(box.conf)
+        if label.lower() in ['t-shirt', 'shirt']:  # adjust labels if needed
+            detections.append({
+                'label': label,
+                'probability': round(conf, 2),
+                'box': box.xyxy[0].tolist()
+            })
+    return jsonify({"data": detections})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

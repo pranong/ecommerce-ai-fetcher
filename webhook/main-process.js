@@ -1,7 +1,7 @@
 // main.js
 const { fetchEbayListings } = require('./utils/ebay-fetcher/fetch-ebay');
 const { downloadImages } = require('./utils/image-downloader');
-const { generateEmbeddings, checkImageIsclothing } = require('./utils/embedder');
+const { generateEmbeddings, checkImageIsclothing, checkImageIsclothingYolo } = require('./utils/embedder');
 const { calculateSimilarity } = require('./utils/similarity');
 // const { sendNotification } = require('./utils/notification/line/notifier');
 const { sendNotification, getKeywords } = require('./utils/notification/telegram/notifier');
@@ -18,7 +18,7 @@ let seenListingIds = new Set();
 
 async function processListing(listing) {
   const imagePaths = await downloadImages(listing);
-  const imageIsClothing = await checkImageIsclothing(imagePaths, listing);
+  const imageIsClothing = await checkImageIsclothingYolo(imagePaths, listing);
   if (imageIsClothing || imagePaths == [] || listing.categories.find(x => ['15687', '11450', '185100'].includes(x.categoryId))) {
     console.log('imageIsClothing?>>>>>>>>>>>>>>>>>>>>', imageIsClothing)
     console.log('imagePaths == []>>>>>>>>>>>>>>>>>>>>', imagePaths == [])
