@@ -62,11 +62,8 @@ async function processListing(listing) {
   }
 }
 
-
-
-async function mainProcess(keywords) {
-  console.log('yay', keywords)
-  keywords = getKeywords();
+async function mainProcess() {
+  let keywords = getKeywords();
   console.log('START Listing')
   await deleteFolderByDate('./tmp')
   const listings = await fetchEbayListings(keywords, 200);
@@ -83,15 +80,6 @@ async function mainProcess(keywords) {
     for (const listing of listings) {
       seenListingIds.add(listing.id);
     }
-  }
-}
-
-async function deleteFolder(path) {
-  try {
-    await fs.rm(path, { recursive: true, force: true });
-    console.log('Folder deleted');
-  } catch (err) {
-    console.error('Error deleting folder:', err);
   }
 }
 

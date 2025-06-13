@@ -1,30 +1,33 @@
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
+const fs = require('fs');
 require('dotenv').config();
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
+const filePath = './keywords.txt';
 
-// Replace with your real user or group chat ID
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-let keywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
+// let keywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
 
 bot.on('message', (msg) => {
     console.log('Your Chat ID:', msg);
     const setKeywordsPattern = /^\/setKeywords \((.*)\)$/;
     if (msg.text == '/keywords') {
+        let keywords = fs.readFileSync(filePath, 'utf-8');
         bot.sendMessage(CHAT_ID, `Current keywords:\n${keywords}`);
     } else if (msg.text == '/resetkeywords') {
         let newKeywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
-        keywords = newKeywords
+        fs.writeFileSync(filePath, newKeywords);
         bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords}`);
     } else if (setKeywordsPattern.test(msg.text)) {
         const parts = msg.text.split(' ');
         const result = parts.slice(1).join(' ');
         const match = result.match(/^\(((?:[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*)(?:,(?:[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*))*?)\)$/);
         if (match) {
-            keywords = result
+            // keywords = result
+            fs.writeFileSync(filePath, result);
             bot.sendMessage(CHAT_ID, `Updated keywords to:\n${result}`);
         } else {
 
@@ -32,23 +35,10 @@ bot.on('message', (msg) => {
     }
 });
 
-
-bot.onText(/\/setKeywords (.+)/, (msg, match) => {
-    //   const chatId = msg.chat.id;
-    console.log('setKeywords', msg)
-    let newKeywords = match[1]
-    keywords = newKeywords
-    updateKeywords(newKeywords);
-    bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords}`);
-});
-
 function sendNotification(listing) {
     const { title, url, imageUrls, id } = listing;
     const imageUrl = imageUrls?.[0] || '';
-
     const caption = '*(' + listing.currency + listing.price + ')* ' + listing.title + `\n` + listing.type + ` [View Listing](${url})`;
-
-
 
     bot.sendPhoto(CHAT_ID, imageUrl, {
         caption,
@@ -65,6 +55,8 @@ function sendNotification(listing) {
 }
 
 function getKeywords() {
+    let keywords = fs.readFileSync(filePath, 'utf-8');
+    console.log('Keyword on file:', keywords);
     return keywords
 }
 
