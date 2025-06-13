@@ -18,7 +18,7 @@ let seenListingIds = new Set();
 
 async function processListing(listing) {
   const imagePaths = await downloadImages(listing);
-  const imageIsClothing = await checkImageIsclothingYolo(imagePaths, listing);
+  const imageIsClothing = await checkImageIsclothing(imagePaths, listing);
   if (imageIsClothing || imagePaths == [] || listing.categories.find(x => ['15687', '11450', '185100'].includes(x.categoryId))) {
     console.log('imageIsClothing?>>>>>>>>>>>>>>>>>>>>', imageIsClothing)
     console.log('imagePaths == []>>>>>>>>>>>>>>>>>>>>', imagePaths == [])
@@ -69,18 +69,25 @@ async function mainProcess() {
   const listings = await fetchEbayListings(keywords, 200);
   console.log('FINISH Listing')
 
-  if (seenListingIds.size > 0) {
-    for (const listing of listings) {
+  for (const listing of listings) {
       if (!seenListingIds.has(listing.id)) {
         seenListingIds.add(listing.id);
         await processListing(listing);
       }
     }
-  } else {
-    for (const listing of listings) {
-      seenListingIds.add(listing.id);
-    }
-  }
+
+  // if (seenListingIds.size > 0) {
+  //   for (const listing of listings) {
+  //     if (!seenListingIds.has(listing.id)) {
+  //       seenListingIds.add(listing.id);
+  //       await processListing(listing);
+  //     }
+  //   }
+  // } else {
+  //   for (const listing of listings) {
+  //     seenListingIds.add(listing.id);
+  //   }
+  // }
 }
 
 async function deleteFolderByDate(tmpDir) {

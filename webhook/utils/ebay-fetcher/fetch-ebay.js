@@ -16,7 +16,7 @@ async function fetchEbayListings(keyword, limit = 100) {
       },
       params: {
         q: keyword,
-        filter: 'personalize:false,buyingOptions:{FIXED_PRICE|AUCTION|BEST_OFFER}',
+        filter: 'personalize:No,buyingOptions:{FIXED_PRICE|AUCTION|BEST_OFFER}',
         limit,
         sort: 'newlyListed'
       },

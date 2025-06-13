@@ -142,9 +142,10 @@ async function checkImageIsclothingYolo(imagePaths, listing) {
     console.log('listing.title',listing.title)
     for (const imagePath of imagePaths) {
       let result = await sendCheckIsImageIsClothingYolo(imagePath, listing);
-      console.log('result.data', result.data)
+      // console.log('result.data', result.data)
       for (let i = 0; i < result.data.length; i++) {
         const element = result.data[i];
+        console.log('element', element)
         if ((element.label === 't-shirt' || element.label === 'shirt') && element.probability >= 0.90) {
           response = true
         }

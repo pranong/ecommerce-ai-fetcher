@@ -13,6 +13,8 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 model = None
 preprocess = None
 
+# model = YOLO("yolov8n.pt")
+
 def load_model():
     global model, preprocess
     if model is None or preprocess is None:
@@ -80,7 +82,11 @@ def check_tshirt_yolo():
 
     # Read image from the request
     image_file = request.files['image']
-    image = Image.open(image_file.stream).convert("RGB")
+    try:
+        image = Image.open(image_file.stream).convert("RGB")
+    except Exception as e:
+        return jsonify({"error": f"Invalid image: {str(e)}"}), 400
+
 
     # Run inference
     results = model(image)
