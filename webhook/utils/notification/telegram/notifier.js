@@ -37,7 +37,7 @@ bot.on('message', (msg) => {
 
 function sendNotification(listing) {
     const { title, url, imageUrls, id } = listing;
-    const imageUrl = imageUrls?.[0] || '';
+    const imageUrl = imageUrls?.[0] || 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2048px-No_image_available.svg.png';
     const caption = '*(' + listing.currency + listing.price + ')* ' + listing.title + `\n` + listing.type + ` [View Listing](${url})`;
 
     bot.sendPhoto(CHAT_ID, imageUrl, {
