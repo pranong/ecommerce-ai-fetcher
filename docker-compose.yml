@@ -11,6 +11,7 @@ services:
     restart: always
     volumes:
       - /var/webhook/uploads:/app/uploads
+      - ./keywords.txt:/app/keywords.txt
 
   flask-api:
     build: ./ai
@@ -18,5 +19,5 @@ services:
       - "5000:5000"
     restart: unless-stopped
 
-volumes:
-  db_data:
+# volumes:
+#   main_data:
