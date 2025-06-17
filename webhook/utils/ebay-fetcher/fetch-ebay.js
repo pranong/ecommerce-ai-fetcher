@@ -3,7 +3,7 @@ const { getEbayAccessToken } = require('./ebay-auth');
 
 const EBAY_BROWSE_API = 'https://api.ebay.com/buy/browse/v1/item_summary/search';
 
-async function fetchEbayListings(keyword, limit = 100) {
+async function fetchEbayListings(keyword, excludesList, limit = 100) {
   const token = await getEbayAccessToken();
 
   try {
@@ -24,8 +24,16 @@ async function fetchEbayListings(keyword, limit = 100) {
     const data = response.data;
     // console.log(typeof response, 'response', response.data)
     // console.log('browse success', keyword)
+
+    const upperExcludes = excludesList.map(k => k.toUpperCase());
+
     console.log('listing size', data.itemSummaries.length)
-    const listings = (data.itemSummaries || []).filter(x => !x.itemGroupType || (x.itemGroupType && x.itemGroupType !== 'SELLER_DEFINED_VARIATIONS')).map(item => {
+    const listings = (data.itemSummaries || []).filter(x => (
+        !x.itemGroupType ||
+        (x.itemGroupType && x.itemGroupType !== 'SELLER_DEFINED_VARIATIONS')
+      ) && (
+        !upperExcludes.some(exclude => item.title.toUpperCase().includes(exclude))
+      )).map(item => {
       // console.log('item', item)
         return ({
         id: item.itemId,

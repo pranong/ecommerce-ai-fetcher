@@ -5,7 +5,8 @@ require('dotenv').config();
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
-const filePath = './keywords.txt';
+const keywordsFilePath = './keywords.txt';
+const excludesFilePath = './excludes.txt';
 
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
@@ -14,12 +15,16 @@ const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 bot.on('message', (msg) => {
     console.log('Your Chat ID:', msg);
     const setKeywordsPattern = /^\/setKeywords \((.*)\)$/;
+    const setExcludesPattern = /^\/setExcludes \((.*)\)$/;
     if (msg.text == '/keywords') {
-        let keywords = fs.readFileSync(filePath, 'utf-8');
+        let keywords = fs.readFileSync(excludesFilePath, 'utf-8');
+        bot.sendMessage(CHAT_ID, `Current excludes:\n${keywords}`);
+    } else if (msg.text == '/excludes') {
+        let keywords = fs.readFileSync(excludesFilePath, 'utf-8');
         bot.sendMessage(CHAT_ID, `Current keywords:\n${keywords}`);
     } else if (msg.text == '/resetkeywords') {
         let newKeywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
-        fs.writeFileSync(filePath, newKeywords);
+        fs.writeFileSync(keywordsFilePath, newKeywords);
         bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords}`);
     } else if (setKeywordsPattern.test(msg.text)) {
         const parts = msg.text.split(' ');
@@ -27,13 +32,33 @@ bot.on('message', (msg) => {
         const match = result.match(/^\(((?:[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*)(?:,(?:[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*))*?)\)$/);
         if (match) {
             // keywords = result
-            fs.writeFileSync(filePath, result);
+            fs.writeFileSync(keywordsFilePath, result);
             bot.sendMessage(CHAT_ID, `Updated keywords to:\n${result}`);
+        } else {
+
+        }
+    } else if (setExcludesPattern.test(msg.text)) {
+        const parts = msg.text.split(' ');
+        const result = parts.slice(1).join(' ');
+        const match = isValidJSON(result)
+        if (match) {
+            // keywords = result
+            fs.writeFileSync(excludesFilePath, result);
+            bot.sendMessage(CHAT_ID, `Updated excludes to:\n${result}`);
         } else {
 
         }
     }
 });
+
+function isValidJSON(str) {
+  try {
+    const parsed = JSON.parse(str);
+    return typeof parsed === 'object' && parsed !== null;
+  } catch (e) {
+    return false;
+  }
+}
 
 function sendNotification(listing) {
     const { title, url, imageUrls, id } = listing;
@@ -55,9 +80,20 @@ function sendNotification(listing) {
 }
 
 function getKeywords() {
-    let keywords = fs.readFileSync(filePath, 'utf-8');
+    let keywords = fs.readFileSync(keywordsFilePath, 'utf-8');
     console.log('Keyword on file:', keywords);
     return keywords
+}
+
+function getExcludes() {
+    let keywords = fs.readFileSync(keywordsFilePath, 'utf-8');
+    let keywordsArray
+    try {
+        keywordsArray = JSON.parse(keywords)
+    } catch (error) {
+        return []
+    }
+    return keywordsArray
 }
 
 // Handle button clicks
@@ -85,4 +121,5 @@ function getKeywords() {
 module.exports = {
     sendNotification,
     getKeywords,
+    getExcludes
 };
