@@ -26,7 +26,7 @@ async function fetchEbayListings(keyword, excludesList, limit = 100) {
     // console.log('browse success', keyword)
 
     const upperExcludes = excludesList.map(k => k.toUpperCase());
-
+    console.log('Excludes', upperExcludes)
     console.log('listing size', data.itemSummaries.length)
     const listings = (data.itemSummaries || []).filter(x => (
         !x.itemGroupType ||
