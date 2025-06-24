@@ -32,7 +32,7 @@ async function fetchEbayListings(keyword, excludesList, limit = 100) {
         !x.itemGroupType ||
         (x.itemGroupType && x.itemGroupType !== 'SELLER_DEFINED_VARIATIONS')
       ) && (
-        !upperExcludes.some(exclude => item.title.toUpperCase().includes(exclude))
+        !upperExcludes.some(exclude => x.title.toUpperCase().includes(exclude))
       )).map(item => {
       // console.log('item', item)
         return ({
