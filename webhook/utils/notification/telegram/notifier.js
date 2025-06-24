@@ -86,7 +86,7 @@ function getKeywords() {
 }
 
 function getExcludes() {
-    let keywords = fs.readFileSync(keywordsFilePath, 'utf-8');
+    let keywords = fs.readFileSync(excludesFilePath, 'utf-8');
     console.log(typeof keywords, 'keywords', keywords)
     let keywordsArray
     try {
