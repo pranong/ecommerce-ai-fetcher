@@ -15,7 +15,7 @@ const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 bot.on('message', (msg) => {
     console.log('Your Chat ID:', msg);
     const setKeywordsPattern = /^\/setKeywords \((.*)\)$/;
-    const setExcludesPattern = /^\/setExcludes \((.*)\)$/;
+    const setExcludesPattern = /^\/setExcludes \[(.*)\]$/;
     if (msg.text == '/keywords') {
         let keywords = fs.readFileSync(excludesFilePath, 'utf-8');
         bot.sendMessage(CHAT_ID, `Current excludes:\n${keywords}`);
