@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Form
 import uvicorn
 import tensorflow as tf
 import numpy as np
@@ -21,7 +21,7 @@ CLOTHING_KEYWORDS = [
 ]
 
 @app.post("/predict")
-async def predict(file: UploadFile = File(...)):
+async def predict(file: UploadFile = File(...), title: str = Form(None)):
     try:
         # Load image
         img = Image.open(BytesIO(await file.read())).convert("RGB")
@@ -33,6 +33,8 @@ async def predict(file: UploadFile = File(...)):
         results = decode_predictions(preds, top=5)[0]
 
         # Log top predictions with percentages
+        print("========================================================")
+        print(f"{title}")
         print("AI Predictions:")
         for (_, label, score) in results:
             print(f"  {label}: {score*100:.2f}%")
@@ -41,11 +43,13 @@ async def predict(file: UploadFile = File(...)):
 
         # Check for clothing keywords
         is_clothing = any(
-            score >= MIN_CONFIDENCE and any(label.lower() == word.lower() for word in CLOTHING_KEYWORDS + FABRIC_KEYWORDS)
+            score >= MIN_CONFIDENCE and any(label.lower() == word.lower() for word in CLOTHING_KEYWORDS)
             for (_, label, score) in results
         )
+
         print("AI shirt Predictions:")
         print(f"  is_clothing: {is_clothing}")
+        print("========================================================")
         return {"is_clothing": is_clothing}
 
     except Exception as e:

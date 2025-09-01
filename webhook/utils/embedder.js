@@ -52,9 +52,10 @@ async function sendImageForEmbedding(imagePath) {
 }
 
 async function sendCheckIsImageIsClothing(imagePath, listing) {
-  // console.log('imagePath', imagePath)
+  console.log('imagePath', imagePath)
   const form = new FormData();
   form.append('file', fs.createReadStream(imagePath));
+  form.append('title', listing.title);
 
   try {
     const response = await axios.post('http://'+apiEndpoint+':5000/predict', form, {
@@ -125,13 +126,19 @@ async function checkImageIsclothing(imagePaths, listing) {
     // response = result.is_clothing
 
 
-    console.log('listing.title',listing.title)
-    for (const imagePath of imagePaths) {
-      let result = await sendCheckIsImageIsClothing(imagePath, listing);
-      // console.log('path', imagePath, 'result ===> ', result)
-      isClothingCount += result.is_clothing ? 1 : 0
+    console.log('listing.title',listing.title, 'imagePaths', imagePaths)
+    // for (const imagePath of imagePaths) {
+    //   let result = await sendCheckIsImageIsClothing(imagePath, listing);
+    //   console.log('path', imagePath, 'result ===> ', result)
+    //   isClothingCount += result.is_clothing ? 1 : 0
+    // }
+    // response = imagePaths.length > 0 && (isClothingCount / imagePaths.length) >= 0.5
+
+    if (imagePaths && imagePaths.length > 0) {
+      let result = await sendCheckIsImageIsClothing(imagePaths[0], listing);
+      console.log('path', imagePaths[0], 'result ===> ', result)
+      response = result.is_clothing
     }
-    response = imagePaths.length > 0 && (isClothingCount / imagePaths.length) >= 0.5
   } catch (error) {
     console.log('error', error)
   }
