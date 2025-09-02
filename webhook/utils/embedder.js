@@ -19,153 +19,35 @@ async function loadModel() {
 let apiEndpoint= 'flask-api'
 // let apiEndpoint= '127.0.0.1'
 
-async function getEmbeddingFromPython(imageUrl) {
+async function checkImageIsclothing(imagePaths, listing) {
+  let response = false;
+  let isClothingCount = 0
   try {
-    console.log('imageUrl', imageUrl)
-    const response = await axios.post('http://'+apiEndpoint+':5000/embed', { imageUrl: imageUrl });
-    console.log('getEmbeddingFromPython response', response.data)
-    return response.data.embedding; // Array of floats
+    if (imagePaths && imagePaths.length > 0) {
+      let result = await checkClothingService(imagePaths[0], listing);
+      response = result.is_clothing
+    }
   } catch (error) {
-    console.error('Error calling CLIP service:', error.response?.data || error.message);
-    return null;
+    console.log('ERROR - checkImageIsclothing:', error)
   }
+  return response;
 }
 
-async function sendImageForEmbedding(imagePath) {
-  const form = new FormData();
-  form.append('image', fs.createReadStream(imagePath));
-
-  try {
-    const response = await axios.post('http://'+apiEndpoint+':5000/embed', form, {
-      headers: {
-        ...form.getHeaders(),
-      },
-      maxContentLength: Infinity,
-      maxBodyLength: Infinity,
-    });
-    // console.log('Embedding:', response.data.embedding);
-    return response.data;
-  } catch (error) {
-    console.error('Error sending image:', error.response?.data || error.message);
-    throw error;
-  }
-}
-
-async function sendCheckIsImageIsClothing(imagePath, listing) {
-  console.log('imagePath', imagePath)
+async function checkClothingService(imagePath, listing) {
   const form = new FormData();
   form.append('file', fs.createReadStream(imagePath));
   form.append('title', listing.title);
-
   try {
     const response = await axios.post('http://'+apiEndpoint+':5000/predict', form, {
       headers: {
         ...form.getHeaders(),
       },
     });
-
-    // const response = await axios.post('http://'+apiEndpoint+':5000/check-tshirt', { imagePath, listing });
-
-    // console.log('check-tshirt:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error sending image:', error.response?.data || error.message);
+    console.error('ERROR - checkClothingService:', error.response?.data || error.message);
     throw error;
   }
 }
 
-async function sendCheckIsImageIsClothingYolo(imagePath, listing) {
-  const form = new FormData();
-  form.append('image', fs.createReadStream(imagePath));
-
-  try {
-    const response = await axios.post('http://'+apiEndpoint+':5000/check-tshirt-yolo', form, {
-      headers: {
-        ...form.getHeaders(),
-      },
-      maxContentLength: Infinity,
-      maxBodyLength: Infinity,
-    });
-
-    // const response = await axios.post('http://'+apiEndpoint+':5000/check-tshirt', { imagePath, listing });
-
-    // console.log('check-tshirt:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Error sending image:', error.response?.data || error.message);
-    throw error;
-  }
-}
-
-async function generateEmbeddings(imagePaths) {
-  const embeddings = [];
-  try {
-    // const model = await loadModel();
-    for (const imagePath of imagePaths) {
-      const result = await sendImageForEmbedding(imagePath);
-      // console.log('result')
-      embeddings.push(result.embedding); // result = { embedding: [...] }
-    }
-  } catch (error) {
-    console.log('error', error)
-  }
-  return embeddings;
-}
-
-async function checkImageIsclothing(imagePaths, listing) {
-  let response = false;
-  let isClothingCount = 0
-  try {
-    // let result = await sendCheckIsImageIsClothing(imagePaths[0], listing);
-    // for (let i = 0; i < result.data.length; i++) {
-    //   const element = result.data[i];
-    //   if ((element.label === 'a photo of a t-shirt') && element.probability >= 0.90) {
-    //     response = true
-    //   }
-    // }
-    // response = result.is_clothing
-
-
-    console.log('listing.title',listing.title, 'imagePaths', imagePaths)
-    // for (const imagePath of imagePaths) {
-    //   let result = await sendCheckIsImageIsClothing(imagePath, listing);
-    //   console.log('path', imagePath, 'result ===> ', result)
-    //   isClothingCount += result.is_clothing ? 1 : 0
-    // }
-    // response = imagePaths.length > 0 && (isClothingCount / imagePaths.length) >= 0.5
-
-    if (imagePaths && imagePaths.length > 0) {
-      let result = await sendCheckIsImageIsClothing(imagePaths[0], listing);
-      console.log('path', imagePaths[0], 'result ===> ', result)
-      response = result.is_clothing
-    }
-  } catch (error) {
-    console.log('error', error)
-  }
-  return response;
-}
-
-async function checkImageIsclothingYolo(imagePaths, listing) {
-  let response = false;
-  let isClothingCount = 0
-  try {
-    // const model = await loadModel();
-    console.log('listing.title',listing.title)
-    for (const imagePath of imagePaths) {
-      let result = await sendCheckIsImageIsClothingYolo(imagePath, listing);
-      // console.log('result.data', result.data)
-      for (let i = 0; i < result.data.length; i++) {
-        const element = result.data[i];
-        console.log('element', element)
-        if ((element.label === 't-shirt' || element.label === 'shirt') && element.probability >= 0.90) {
-          response = true
-        }
-      }
-    }
-  } catch (error) {
-    console.log('error', error)
-  }
-  return response;
-}
-
-module.exports = { generateEmbeddings, checkImageIsclothing, checkImageIsclothingYolo };
+module.exports = { checkImageIsclothing };

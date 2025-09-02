@@ -10,20 +10,18 @@ const excludesFilePath = './excludes.txt';
 
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-// let keywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
-
 bot.on('message', (msg) => {
     console.log('Your Chat ID:', msg);
     const setKeywordsPattern = /^\/setKeywords \((.*)\)$/;
     const setExcludesPattern = /^\/setExcludes \[(.*)\]$/;
     if (msg.text == '/keywords') {
-        let keywords = fs.readFileSync(excludesFilePath, 'utf-8');
-        bot.sendMessage(CHAT_ID, `Current excludes:\n${keywords}`);
+        let keywords = fs.readFileSync(keywordsFilePath, 'utf-8');
+        bot.sendMessage(CHAT_ID, `Current keywords:\n${keywords}`);
     } else if (msg.text == '/excludes') {
         let keywords = fs.readFileSync(excludesFilePath, 'utf-8');
-        bot.sendMessage(CHAT_ID, `Current keywords:\n${keywords}`);
+        bot.sendMessage(CHAT_ID, `Current excludes:\n${keywords}`);
     } else if (msg.text == '/resetkeywords') {
-        let newKeywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub)'
+        let newKeywords = '(deftones,blink 182,green day,bad religion,nirvana,sonic youth,dinosaur jr,Melvins,radiohead,The cure,Pearl jam,The smashing pumpkins,Teenage fanclub,rhcp,red hot chilli pepper,nin,nine inch nails,nofx,weezer,punk o rama,marilyn manson)'
         fs.writeFileSync(keywordsFilePath, newKeywords);
         bot.sendMessage(CHAT_ID, `Updated keywords to:\n${newKeywords}`);
     } else if (setKeywordsPattern.test(msg.text)) {
@@ -81,7 +79,6 @@ function sendNotification(listing) {
 
 function getKeywords() {
     let keywords = fs.readFileSync(keywordsFilePath, 'utf-8');
-    console.log('Keyword on file:', keywords);
     return keywords
 }
 

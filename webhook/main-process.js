@@ -1,7 +1,7 @@
 // main.js
 const { fetchEbayListings } = require('./utils/ebay-fetcher/fetch-ebay');
 const { downloadImages } = require('./utils/image-downloader');
-const { generateEmbeddings, checkImageIsclothing, checkImageIsclothingYolo } = require('./utils/embedder');
+const { checkImageIsclothing } = require('./utils/embedder');
 const { calculateSimilarity } = require('./utils/similarity');
 // const { sendNotification } = require('./utils/notification/line/notifier');
 const { sendNotification, getKeywords, getExcludes } = require('./utils/notification/telegram/notifier');
@@ -17,48 +17,14 @@ const SIMILARITY_THRESHOLD = 0.99;
 let seenListingIds = new Set();
 
 async function processListing(listing) {
+  console.log('TITLE:', listing.title)
   const imagePaths = await downloadImages(listing);
   const imageIsClothing = await checkImageIsclothing(imagePaths, listing);
   if (imageIsClothing || imagePaths == [] || listing.categories.find(x => ['15687', '11450', '185100'].includes(x.categoryId))) {
-    console.log('imageIsClothing?>>>>>>>>>>>>>>>>>>>>', imageIsClothing)
-    console.log('imagePaths == []>>>>>>>>>>>>>>>>>>>>', imagePaths == [])
-    console.log('categories', listing.categories)
-    console.log('categories in [15687, 11450, 185100]', listing.categories.find(x => ['15687', '11450', '185100'].includes(x.categoryId)))
-    // const imageEmbeds = await generateEmbeddings(imagePaths);
-    // const feedback = loadFeedback();
-
-    // // const isTooSimilar = feedback.not_interested.some(past =>
-    // //   imageEmbeds.some(current => calculateSimilarity(past.embedding, current) >= SIMILARITY_THRESHOLD)
-    // // );
-
-    // const interestedEmbeds = feedback.interested
-    //   .map(item => item.embedding?.embedding || item.embedding || []);
-
-    // const notInterestedEmbeds = feedback.not_interested
-    //   .map(item => item.embedding?.embedding || item.embedding || []);
-
-    // const matchesInterest = interestedEmbeds.some(past =>
-    //   imageEmbeds.some(current =>
-    //     calculateSimilarity(past, current) >= SIMILARITY_THRESHOLD
-    //   )
-    // );
-
-    // const matchesNotInterest = notInterestedEmbeds.some(past =>
-    //   imageEmbeds.some(current =>
-    //     calculateSimilarity(past, current) >= SIMILARITY_THRESHOLD
-    //   )
-    // );
-
-    // console.log('matchesInterest', matchesInterest, 'matchesNotInterest', matchesNotInterest)
-
-    // if (matchesInterest && !matchesNotInterest) {
-    //   await saveEmbedToTemp(listing, imageEmbeds)
-    //   await sendNotification(listing);
-    // }
-
+    console.log('          isClothing: true')
     await sendNotification(listing)
   } else {
-    console.log('isClothing?>>>>>>> false')
+    console.log('          isClothing: false')
   }
 }
 

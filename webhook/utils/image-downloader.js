@@ -11,7 +11,6 @@ async function downloadImages(listing) {
 
   const imagePaths = [];
   for (let i = 0; i < listing.imageUrls.length; i++) {
-    // console.log('listing.imageUrls', listing.imageUrls[i])
     const response = await axios.get(listing.imageUrls[i], { responseType: 'arraybuffer', httpsAgent: agent });
     const buffer = Buffer.from(response.data, 'binary');
     const filePath = path.join(folder, `img${i}.jpg`);

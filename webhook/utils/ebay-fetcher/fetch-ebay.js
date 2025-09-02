@@ -12,7 +12,6 @@ async function fetchEbayListings(keyword, excludesList, limit = 100) {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
-        // 'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US',
       },
       params: {
         q: keyword,
@@ -22,11 +21,10 @@ async function fetchEbayListings(keyword, excludesList, limit = 100) {
       },
     });
     const data = response.data;
-    // console.log(typeof response, 'response', response.data)
-    // console.log('browse success', keyword)
 
     const upperExcludes = excludesList.map(k => k.toUpperCase());
-    console.log('Excludes', upperExcludes)
+    console.log('KEYWORDS:', keyword)
+    console.log('EXCLUDES', upperExcludes)
     console.log('listing size', data.itemSummaries.length)
     const listings = (data.itemSummaries || []).filter(x => (
         !x.itemGroupType ||
@@ -34,7 +32,6 @@ async function fetchEbayListings(keyword, excludesList, limit = 100) {
       ) && (
         !upperExcludes.some(exclude => x.title.toUpperCase().includes(exclude))
       )).map(item => {
-      // console.log('item', item)
         return ({
         id: item.itemId,
         title: item.title,
