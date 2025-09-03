@@ -1,5 +1,5 @@
 // main.js
-const { fetchEbayListings } = require('./utils/ebay-fetcher/fetch-ebay');
+const { fetchEbayListings, fetchByItem } = require('./utils/ebay-fetcher/fetch-ebay');
 const { downloadImages } = require('./utils/image-downloader');
 const { checkImageIsclothing } = require('./utils/embedder');
 const { calculateSimilarity } = require('./utils/similarity');
@@ -19,6 +19,13 @@ let seenListingIds = new Set();
 async function processListing(listing) {
   console.log('TITLE:', listing.title)
   console.log('IMG_URL:',listing.imageUrls)
+  if (listing.imageUrls.length == 0) {
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETRY GET IMAGE')
+    let itemDetail = await fetchByItem(listing)
+    console.log(' ', itemDetail)
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETRY GET IMAGE')
+    listing = { ...listing, imageUrls: itemDetail.data.image ? [itemDetail.data.image.imageUrl] : [] }
+  }
   const imagePaths = await downloadImages(listing);
   const imageIsClothing = await checkImageIsclothing(imagePaths, listing);
   if (imageIsClothing || imagePaths == [] || listing.categories.find(x => ['15687', '11450', '185100'].includes(x.categoryId))) {
