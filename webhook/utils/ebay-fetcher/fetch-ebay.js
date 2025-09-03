@@ -2,6 +2,7 @@ const axios = require('axios');
 const { getEbayAccessToken } = require('./ebay-auth');
 
 const EBAY_BROWSE_API = 'https://api.ebay.com/buy/browse/v1/item_summary/search';
+const EBAY_FETCH_ITEM_API = 'https://api.ebay.com/buy/browse/v1/item/';
 
 async function fetchEbayListings(keyword, excludesList, limit = 100) {
   const token = await getEbayAccessToken();
@@ -50,4 +51,26 @@ async function fetchEbayListings(keyword, excludesList, limit = 100) {
   }
 }
 
-module.exports = { fetchEbayListings };
+async function fetchByItem(itemId){
+  const token = await getEbayAccessToken();
+  let data = null;
+
+  try {
+    const response = await axios.get(EBAY_FETCH_ITEM_API + itemId, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    data = {
+      status: '000',
+      data: response.data
+    };
+
+    return data;
+  } catch (error) {
+    throw new Error(`eBay API error: ${error.response?.status} ${error.response?.statusText || error.message}`);
+  }
+}
+
+module.exports = { fetchByItem, fetchEbayListings };

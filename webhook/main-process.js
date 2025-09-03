@@ -18,6 +18,7 @@ let seenListingIds = new Set();
 
 async function processListing(listing) {
   console.log('TITLE:', listing.title)
+  console.log('IMG_URL:',listing.imageUrls)
   const imagePaths = await downloadImages(listing);
   const imageIsClothing = await checkImageIsclothing(imagePaths, listing);
   if (imageIsClothing || imagePaths == [] || listing.categories.find(x => ['15687', '11450', '185100'].includes(x.categoryId))) {
