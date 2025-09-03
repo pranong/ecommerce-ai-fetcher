@@ -20,15 +20,18 @@ async function processListing(listing) {
   console.log('TITLE:', listing.title)
   console.log('IMG_URL:',listing.imageUrls)
   if (listing.imageUrls.length == 0) {
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETRY GET IMAGE')
-    let itemDetail = await fetchByItem(listing)
-    console.log(' ', itemDetail)
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RETRY GET IMAGE')
-    listing = { ...listing, imageUrls: itemDetail.data.image ? [itemDetail.data.image.imageUrl] : [] }
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REMOVE ID FROM LIST FOR RETRY')
+  //   let itemDetail = await fetchByItem(listing)
+    console.log('id', listing.id)
+    seenListingIds.delete(listing.id);
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REMOVE ID FROM LIST FOR RETRY')
+  //   listing = { ...listing, imageUrls: itemDetail.data.image ? [itemDetail.data.image.imageUrl] : [] }
   }
   const imagePaths = await downloadImages(listing);
   const imageIsClothing = await checkImageIsclothing(imagePaths, listing);
-  if (imageIsClothing || imagePaths == [] || listing.categories.find(x => ['15687', '11450', '185100'].includes(x.categoryId))) {
+
+  // if (imageIsClothing || imagePaths == [] || listing.categories.find(x => ['15687', '11450', '185100'].includes(x.categoryId))) {
+  if (imageIsClothing) {
     console.log('          isClothing: true')
     await sendNotification(listing)
   } else {
