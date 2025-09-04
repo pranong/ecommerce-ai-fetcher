@@ -26,7 +26,8 @@ async function fetchEbayListings(keyword, excludesList, limit = 100) {
     const upperExcludes = excludesList.map(k => k.toUpperCase());
     console.log('KEYWORDS:', keyword.substring(1, keyword.length - 1).split(','))
     console.log('EXCLUDES', upperExcludes)
-    console.log('listing size', data.itemSummaries.length)
+    console.log('START LISTING')
+    console.log('ORIGINAL SIZE:', data.itemSummaries.length)
     const listings = (data.itemSummaries || []).filter(x => (
         !x.itemGroupType ||
         (x.itemGroupType && x.itemGroupType !== 'SELLER_DEFINED_VARIATIONS')
@@ -44,7 +45,8 @@ async function fetchEbayListings(keyword, excludesList, limit = 100) {
         currency: item.price ? item.price.currency : item.currentBidPrice ? item.currentBidPrice.currency : 'currency:null'
       })
     });
-    console.log('listings filtered size', listings.length)
+    console.log('FILTERED SIZE:', listings.length)
+    console.log('END LISTING')
     return listings;
   } catch (error) {
     throw new Error(`eBay API error: ${error.response?.status} ${error.response?.statusText || error.message}`);

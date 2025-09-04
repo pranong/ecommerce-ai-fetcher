@@ -42,11 +42,12 @@ async function processListing(listing) {
 async function mainProcess() {
   let keywords = getKeywords();
   let excludes = getExcludes();
-  console.log('START Listing')
   await deleteFolderByDate('./tmp')
-  const listings = await fetchEbayListings(keywords, excludes, 200);
-  console.log('FINISH Listing')
 
+  console.log('===========================================START MAIN_PROCESS===========================================')
+  const listings = await fetchEbayListings(keywords, excludes, 200);
+  console.log('============================================END MAIN_PROCESS============================================')
+  
   if (seenListingIds.size > 0) {
     for (const listing of listings) {
       if (!seenListingIds.has(listing.id)) {
