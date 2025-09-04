@@ -17,26 +17,23 @@ const SIMILARITY_THRESHOLD = 0.99;
 let seenListingIds = new Set();
 
 async function processListing(listing) {
+  console.log('>>>>> START MAIN_PROCESS <<<<<')
   console.log('TITLE:', listing.title)
   console.log('IMG_URL:',listing.imageUrls)
   if (listing.imageUrls.length == 0) {
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REMOVE ID FROM LIST FOR RETRY')
-  //   let itemDetail = await fetchByItem(listing)
-    console.log('id', listing.id)
+    console.log(`REMOVE ID '${listing.id}' FROM LIST FOR RETRY`)
     seenListingIds.delete(listing.id);
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REMOVE ID FROM LIST FOR RETRY')
-  //   listing = { ...listing, imageUrls: itemDetail.data.image ? [itemDetail.data.image.imageUrl] : [] }
   }
   const imagePaths = await downloadImages(listing);
   const imageIsClothing = await checkImageIsclothing(imagePaths, listing);
 
-  // if (imageIsClothing || imagePaths == [] || listing.categories.find(x => ['15687', '11450', '185100'].includes(x.categoryId))) {
   if (imageIsClothing) {
-    console.log('          isClothing: true')
+    console.log('IS_CLOTHING: true')
     await sendNotification(listing)
   } else {
-    console.log('          isClothing: false')
+    console.log('IS_CLOTHING: false')
   }
+  console.log('>>>>> END MAIN_PROCESS <<<<<')
 }
 
 async function mainProcess() {
@@ -46,7 +43,6 @@ async function mainProcess() {
 
   console.log('===========================================START MAIN_PROCESS===========================================')
   const listings = await fetchEbayListings(keywords, excludes, 200);
-  console.log('============================================END MAIN_PROCESS============================================')
   
   if (seenListingIds.size > 0) {
     for (const listing of listings) {
@@ -60,6 +56,7 @@ async function mainProcess() {
       seenListingIds.add(listing.id);
     }
   }
+  console.log('============================================END MAIN_PROCESS============================================')
 }
 
 async function deleteFolderByDate(tmpDir) {
