@@ -17,7 +17,7 @@ const SIMILARITY_THRESHOLD = 0.99;
 let seenListingIds = new Set();
 
 async function processListing(listing) {
-  console.log('>>>>> START MAIN_PROCESS <<<<<')
+  console.log('>>>>> START IMAGES_PROCESSING <<<<<')
   console.log('TITLE:', listing.title)
   console.log('IMG_URL:',listing.imageUrls)
   if (listing.imageUrls.length == 0) {
@@ -33,7 +33,7 @@ async function processListing(listing) {
   } else {
     console.log('IS_CLOTHING: false')
   }
-  console.log('>>>>> END MAIN_PROCESS <<<<<')
+  console.log('>>>>>> END IMAGES_PROCESSING <<<<<<')
 }
 
 async function mainProcess() {

@@ -26,7 +26,7 @@ async function fetchEbayListings(keyword, excludesList, limit = 100) {
     const upperExcludes = excludesList.map(k => k.toUpperCase());
     console.log('KEYWORDS:', keyword.substring(1, keyword.length - 1).split(','))
     console.log('EXCLUDES', upperExcludes)
-    console.log('......START LISTING......')
+    console.log('>>>>>>> START EBAY_LISTINGS <<<<<<<')
     console.log('ORIGINAL SIZE:', data.itemSummaries.length)
     const listings = (data.itemSummaries || []).filter(x => (
         !x.itemGroupType ||
@@ -46,7 +46,7 @@ async function fetchEbayListings(keyword, excludesList, limit = 100) {
       })
     });
     console.log('FILTERED SIZE:', listings.length)
-    console.log('.......END LISTING.......')
+    console.log('>>>>>>>> END EBAY_LISTINGS <<<<<<<<')
     return listings;
   } catch (error) {
     throw new Error(`eBay API error: ${error.response?.status} ${error.response?.statusText || error.message}`);
